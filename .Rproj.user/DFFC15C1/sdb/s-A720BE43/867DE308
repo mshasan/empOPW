@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: empOPW\nType: Package\nTitle: What the Package Does (Title Case)\nVersion: 0.1.0\nAuthor: Who wrote it\nMaintainer: The package maintainer <yourself@somewhere.net>\nDescription: More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.\nLicense: What license is it under?\nEncoding: UTF-8\nLazyData: true",
+    "created" : 1493935900861.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "159830467",
+    "id" : "867DE308",
+    "lastKnownWriteTime" : 1493935766,
+    "last_content_update" : 1493935766,
+    "path" : "C:/Users/Apu-Jerrica/Google Drive/My R Packages/empOPW/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
