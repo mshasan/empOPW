@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "export(prob_rank_givenEffect_emp)\nimport(stats)\nimportFrom(graphics, hist)\nimportFrom(qvalue, qvalue)\nimportFrom(tibble, tibble)\nimportFrom(MASS, boxcox)\nimportFrom(BiocGenerics, as.data.frame)\n\n",
+    "created" : 1493936754873.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "4065656799",
+    "id" : "373F677A",
+    "lastKnownWriteTime" : 1493936976,
+    "last_content_update" : 1493936976662,
+    "path" : "C:/Users/Apu-Jerrica/Google Drive/My R Packages/empOPW/NAMESPACE",
+    "project_path" : "NAMESPACE",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_namespace"
+}

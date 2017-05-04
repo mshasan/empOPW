@@ -1,6 +1,6 @@
-#' @title Emperical probbaility of rank of test given effect size
+#' @title Emperical probbaility of the rank of test given effect size
 #'
-#' @description Emperical comnputation of the probbaility of rank of a test being
+#' @description Emperical comnputation of the probability of the rank of a test being
 #' higher than any other test given the effect size from external information.
 #' @param group number of groups
 #' @param pvalue vector of test pvalues
@@ -81,3 +81,18 @@ prob_rank_givenEffect_emp <- function(group = 5L, pvalue, filterStat,
     probVec <- sapply(1:group, fun.prob)
     return(probVec/sum(probVec))
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

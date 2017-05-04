@@ -1,11 +1,41 @@
 Package: empOPW
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Encoding: UTF-8
+Title: Empirical Method of Optimal Pvalue Weighting
+Version: 0.99.0
+Date: 2017-04-10
+Author: Mohamad S. Hasan
+Maintainer: Mohamad S. Hasan <shakilmohamad7@gmail.com>
+Description: This package perform weighted-pvalue based multiple hypothesis test 
+    and provides corresponding information such as ranking probability, weight, 
+    significant tests, etc . To conduct this testing procedure, the testing 
+    method apply an empirical probabilistic relationship between the test rank by
+    external covariates and the corresponding test effect size.
+Depends: 
+    R (>= 3.3.0)
+License: Artistic-2.0
 LazyData: true
+Imports:
+    BiocGenerics,
+    graphics,
+    MASS,
+    qvalue,
+    stats, 
+    tibble
+Suggests:
+    airway,
+    BiocStyle,
+    cowplot,
+    DESeq2,
+    devtools,
+    ggplot2,
+    gridExtra,
+    knitr,
+    Matrix,
+    rmarkdown
+VignetteBuilder: knitr
+biocViews:
+    MultipleComparison,
+    RNASeq
+RoxygenNote: 6.0.1
+URL: https://github.com/mshasan/empOPW
+Bugreports: https://github.com/mshasan/empOPW/issues

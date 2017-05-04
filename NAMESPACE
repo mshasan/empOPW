@@ -1,1 +1,8 @@
-exportPattern("^[[:alpha:]]+")
+export(prob_rank_givenEffect_emp)
+import(stats)
+importFrom(graphics, hist)
+importFrom(qvalue, qvalue)
+importFrom(tibble, tibble)
+importFrom(MASS, boxcox)
+importFrom(BiocGenerics, as.data.frame)
+

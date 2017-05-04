@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: empOPW\nType: Package\nTitle: Empirical Method of Optimal Pvalue Weighting\nVersion: 0.99.0\nDate: 2017-04-10\nAuthor: Mohamad S. Hasan\nMaintainer: Mohamad S. Hasan <shakilmohamad7@gmail.com>\nDescription: This package perform weighted-pvalue based multiple hypothesis test \n    and provides corresponding information such as ranking probability, weight, \n    significant tests, etc . To conduct this testing procedure, the testing \n    method apply an empirical probabilistic relationship between the test rank by\n    external covariates and the corresponding test effect size.\nDepends: \n    R (>= 3.3.0)\nLicense: Artistic-2.0\nLazyData: true\nImports:\n    BiocGenerics,\n    graphics,\n    MASS,\n    qvalue,\n    stats, \n    tibble\nSuggests:\n    airway,\n    BiocStyle,\n    cowplot,\n    DESeq2,\n    devtools,\n    ggplot2,\n    gridExtra,\n    knitr,\n    Matrix,\n    rmarkdown\nVignetteBuilder: knitr\nbiocViews:\n    MultipleComparison,\n    RNASeq\nRoxygenNote: 6.0.1\nURL: https://github.com/mshasan/empOPW\nBugreports: https://github.com/mshasan/empOPW/issues\n",
+    "created" : 1493935900861.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "1575021705",
+    "id" : "867DE308",
+    "lastKnownWriteTime" : 1493936745,
+    "last_content_update" : 1493936745974,
+    "path" : "C:/Users/Apu-Jerrica/Google Drive/My R Packages/empOPW/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}
