@@ -1,37 +1,42 @@
-#' @title Emperical probbaility of the rank of test given effect size
+#' @title Emperical ranks probbaility of the test given the effect size
 #'
-#' @description Emperical comnputation of the probability of the rank of a test being
-#' higher than any other test given the effect size from external information.
-#' @param group number of groups
+#' @description Emperical comnputation of the ranks probability of a test being
+#' higher than any other test given the effect size from the external information.
 #' @param pvalue vector of test pvalues
-#' @param filterStat vector of filter statistics
+#' @param filter vector of filter statistics
+#' @param group number of groups
+#' @param h_breaks number of breaks for the histogram
 #' @param effectType type of effect size c("binary","continuous")
 #'
 #' @details If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i > 0,}
-#' then \code{et}  and \code{ey} should be mean of the test and filter effect sizes,
-#' respectively. This is called hypothesis testing for the continuous effect sizes.
-#' If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i = \epsilion,}
-#' then \code{et} and \code{ey} should be median or any discrete value of the
-#' test and filter effect sizes. This is called hypothesis testing for the Binary
-#' effect sizes
+#' then \code{et}  and \code{ey} should effect type continuous effect size and
+#' if one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i = \epsilion,}
+#' one should the binary effect size
+#'
 #' @author Mohamad S. Hasan, mshasan@uga.edu
+#'
 #' @export
+#'
 #' @import stats
-#' @seealso \code{\link{qvalue}} \code{\link{runif}} \code{\link{rnorm}}
-#' @return \code{prob} emperical probability of the rank of the test
+#' @import limma propTrueNull
+#'
+#' @return \code{ranksProb} emperical probability of the rank of the test
+#'
 #' @examples
 #'
 #' # generating data (known in practice)
-#' pvalue <- runif(100000)
-#' filterStat <- rnorm(100000)
+#' X = runif(100000, min = 0, max = 2.5)         # covariate
+#' H = rbinom(length(X), size = 1, prob = 0.1)   # hypothesis true or false
+#' Z = rnorm(length(X), mean = H * X)            # Z-score
+#' p = 1 - pnorm(Z)
 #'
 #' # apply the function to compute the rank proabbility
-#' group=10
-#' ranksProb=sapply(group,prob_rank_givenEffect_emp, pvalue, filterStat,
-#'                        effectType="continuous")
+#' grp = 10
+#' ranksProb = prob_rank_givenEffect_emp(pvalue = p, filter = X, group = grp,
+#'                                h_breaks = 101, effectType = "continuous")
 #'
 #' # plot the probability
-#' plot(1:group,ranksProb,type="l",lwd=2,xlab="ranks",ylab="P(rank|effect)")
+#' plot(1:grp, ranksProb, type="l", xlab = "ranks", ylab = "P(rank | effect)")
 #'
 #===============================================================================
 # function to compute p(rank=k|filterEffect=ey) emperically
@@ -39,53 +44,57 @@
 # Input:-----
 # group = number of groups
 # pvalue = vector of test pvalues
-# filterStat = vector of filter statistics
+# filter = vector of filter statistics
 # effectType = type of effect size c("binary","continuous")
 
 # internal parameters:-----
-# groupSize = number of pvalues per group
+# grpSize = number of pvalues per group
 # Data = a data frame of pvalue and filter statistics
 # OD = ordered data by the fitler statsistics
 # OD_pvalue = ordered pvaluse by the fitler statistics
-# pvalue_perGroup = vector of pvalues per group
-# fun.prob = funtion to compute probability for each group
+# pval_perGrp = vector of pvalues per group
+# fun_prob = funtion to compute probability for each group
 # prob = proability for each group
-# h = compute density from histogram
+# hist_dens = compute density from histogram
 # probAll = normalized density for all points but we need only the first
 
 # output:-----
-# probVec = normalized probability of rank given effect size, p(rank=k|effect=ey)
+# probVec_smooth_norm = normalized ranks probability given
+# effect size, p(rank=k|effect=ey)
 #===============================================================================
-prob_rank_givenEffect_emp <- function(group = 5L, pvalue, filterStat,
-                                      effectType = c("binary", "continuous"))
-{
-    groupSize <- ceiling(length(pvalue)/group)
-    Data <- data.frame(pvalue, filterStat)
-    OD <- Data[order(Data$filterStat, decreasing=T), ]
-    OD_pvalue <- OD$pvalue
-
-    fun.prob <- function(group)
+prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 101,
+                                      effectType = c("continuous", "binary"))
     {
-        pvalue_perGroup <- OD_pvalue[(group*groupSize-groupSize+1):(group*groupSize)]
+        grpSize <- ceiling(length(pvalue)/group)
+        Data <- tibble(pvalue, filter)
+        OD <- Data[order(Data$filter, decreasing = TRUE), ]
+        OD_pvalue <- OD$pvalue
 
-        if(effectType=="binary"){
-            prob <- 1-qvalue(p = pvalue_perGroup, pfdr = TRUE, pi0.method="bootstrap",
-                             lambda = max(pvalue_perGroup))$pi0
-        } else {
-            h <- hist(pvalue_perGroup, freq = FALSE, breaks=seq(0,1,length=11))$density
-            probAll = h/sum(h)
-            prob = probAll[1]
-        }
-    return(prob)
+        # function to compute ranks probbaility per group--------------
+        fun_prob <- function(group)
+            {
+                pval_perGrp <- OD_pvalue[(group*grpSize - grpSize + 1):(group*grpSize)]
+
+                if(effectType == "continuous"){
+                    hist_dens <- hist(pval_perGrp, freq = FALSE,
+                              breaks = seq(0, 1, length = h_breaks))$density
+                    probAll = hist_dens/sum(hist_dens)
+                    prob = probAll[1]
+                } else {
+                    prob <- 1 - propTrueNull(p = pval_perGrp, method = "lfdr")
+                }
+
+                return(prob)
+            }
+
+        probVec <- sapply(1:group, fun_prob)
+
+        # smooting and nomalizing the ranks probability-------------
+        probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = 3)$y
+        probVec_smooth_norm <- probVec_smooth/sum(probVec_smooth, na.rm = TRUE)
+
+        return(probVec_smooth_norm)
     }
-    probVec <- sapply(1:group, fun.prob)
-    return(probVec/sum(probVec))
-}
-
-
-
-
-
 
 
 

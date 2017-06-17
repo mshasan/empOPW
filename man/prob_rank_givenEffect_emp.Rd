@@ -2,53 +2,51 @@
 % Please edit documentation in R/prob_rank_givenEffect_emp.R
 \name{prob_rank_givenEffect_emp}
 \alias{prob_rank_givenEffect_emp}
-\title{Emperical probbaility of rank of test given effect size}
+\title{Emperical ranks probbaility of the test given the effect size}
 \usage{
-prob_rank_givenEffect_emp(group = 5L, pvalue, filterStat,
-  effectType = c("binary", "continuous"))
+prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 101,
+  effectType = c("continuous", "binary"))
 }
 \arguments{
-\item{group}{number of groups}
-
 \item{pvalue}{vector of test pvalues}
 
-\item{filterStat}{vector of filter statistics}
+\item{filter}{vector of filter statistics}
+
+\item{group}{number of groups}
+
+\item{h_breaks}{number of breaks for the histogram}
 
 \item{effectType}{type of effect size c("binary","continuous")}
 }
 \value{
-\code{prob} emperical probability of the rank of the test
+\code{ranksProb} emperical probability of the rank of the test
 }
 \description{
-Emperical comnputation of the probbaility of rank of a test being
-higher than any other test given the effect size from external information.
+Emperical comnputation of the ranks probability of a test being
+higher than any other test given the effect size from the external information.
 }
 \details{
 If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i > 0,}
-then \code{et}  and \code{ey} should be mean of the test and filter effect sizes,
-respectively. This is called hypothesis testing for the continuous effect sizes.
-If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i = \epsilion,}
-then \code{et} and \code{ey} should be median or any discrete value of the
-test and filter effect sizes. This is called hypothesis testing for the Binary
-effect sizes
+then \code{et}  and \code{ey} should effect type continuous effect size and
+if one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i = \epsilion,}
+one should the binary effect size
 }
 \examples{
 
 # generating data (known in practice)
-pvalue <- runif(100000)
-filterStat <- rnorm(100000)
+X = runif(100000, min = 0, max = 2.5)         # covariate
+H = rbinom(length(X), size = 1, prob = 0.1)   # hypothesis true or false
+Z = rnorm(length(X), mean = H * X)            # Z-score
+p = 1 - pnorm(Z)
 
 # apply the function to compute the rank proabbility
-group=10
-ranksProb=sapply(group,prob_rank_givenEffect_emp, pvalue, filterStat,
-                       effectType="continuous")
+grp = 10
+ranksProb = prob_rank_givenEffect_emp(pvalue = p, filter = X, group = grp,
+                               h_breaks = 101, effectType = "continuous")
 
 # plot the probability
-plot(1:group,ranksProb,type="l",lwd=2,xlab="ranks",ylab="P(rank|effect)")
+plot(1:grp, ranksProb, type="l", xlab = "ranks", ylab = "P(rank | effect)")
 
-}
-\seealso{
-\code{\link{qvalue}} \code{\link{runif}} \code{\link{rnorm}}
 }
 \author{
 Mohamad S. Hasan, mshasan@uga.edu
