@@ -4,8 +4,9 @@
 #' higher than any other test given the effect size from the external information.
 #' @param pvalue vector of test pvalues
 #' @param filter vector of filter statistics
-#' @param group number of groups
+#' @param group number of groups, should be at least four
 #' @param h_breaks number of breaks for the histogram
+#' @param df degrees of freedom for spline smooting. Must be in (1, group].
 #' @param effectType type of effect size c("binary","continuous")
 #'
 #' @details If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i > 0,}
@@ -63,17 +64,19 @@
 # effect size, p(rank=k|effect=ey)
 #===============================================================================
 prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 101,
-                                      effectType = c("continuous", "binary"))
+                                      df = 3, effectType = c("continuous", "binary"))
     {
-        grpSize <- ceiling(length(pvalue)/group)
-        Data <- tibble(pvalue, filter)
-        OD <- Data[order(Data$filter, decreasing = TRUE), ]
+        Data = tibble(pvalue, filter)
+        data_omit_na <- Data[which(!is.na(Data$pvalue)),]
+        OD <- data_omit_na[order(data_omit_na$filter, decreasing = TRUE), ]
         OD_pvalue <- OD$pvalue
 
+        grpSize <- ceiling(length(OD_pvalue)/group)
+
         # function to compute ranks probbaility per group--------------
-        fun_prob <- function(group)
+        fun_prob <- function(grp)
             {
-                pval_perGrp <- OD_pvalue[(group*grpSize - grpSize + 1):(group*grpSize)]
+                pval_perGrp <- OD_pvalue[(grp*grpSize - grpSize + 1):(grp*grpSize)]
 
                 if(effectType == "continuous"){
                     hist_dens <- hist(pval_perGrp, freq = FALSE,
@@ -90,7 +93,7 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 101
         probVec <- sapply(1:group, fun_prob)
 
         # smooting and nomalizing the ranks probability-------------
-        probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = 3)$y
+        probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
         probVec_smooth_norm <- probVec_smooth/sum(probVec_smooth, na.rm = TRUE)
 
         return(probVec_smooth_norm)

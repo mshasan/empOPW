@@ -19,7 +19,8 @@
 #' @param delInterval interval between the \code{delta} values of a sequence.
 #' Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the weight
 #' @param group number of groups to be used to split the p-values, default is five
-#' @param  h_breaks number of breaks to be used for the histogram, default is 101
+#' @param h_breaks number of breaks to be used for the histogram, default is 101
+#' @param df degrees of freedom for spline smooting. Must be in (1, group].
 #' @param effectType type of effect sizes; c("continuous", "binary")
 #' @param method type of methods is used to obtain the results; c("BH", "BON"),
 #' Benjemini-Hochberg or Bonferroni
@@ -49,6 +50,9 @@
 #'
 #' The function internally compute \code{mean_testEffect} from the test statistics,
 #' which is obtainde from the p-values.
+#'
+#' It is better to see different combinations of groups and h_breaks to optimize
+#' the rejections. The number of p-values per group could be approximately 1000.
 #'
 #' @author Mohamad S. Hasan
 #'
@@ -152,19 +156,20 @@
 
 empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEffect = NULL,
                 alpha = .05, tail = 1L, delInterval = .0001, group = 5L, h_breaks = 101L,
-                effectType = c("continuous", "binary"), method = c("BH", "BON"), ... )
+                df = 3, effectType = c("continuous", "binary"), method = c("BH", "BON"), ... )
 {
-    # compute the number of tests------------
-    m = length(pvalue)
-    nullProp = qvalue(p = pvalue, pi0.method = "bootstrap")$pi0
-    m0 = ceiling(nullProp*m)
-    m1 = m - m0
-
-
     # formulate a data set-------------
     Data = tibble(pvalue, filter)
-    OD <- Data[order(Data$filter, decreasing = TRUE), ]
+    data_omit_na <- Data[which(!is.na(Data$pvalue)),]
+    OD <- data_omit_na[order(data_omit_na$filter, decreasing = TRUE), ]
     OD_pvalue <- OD$pvalue
+
+
+    # compute the number of tests------------
+    m = length(OD_pvalue)
+    nullProp = qvalue(p = OD_pvalue, pi0.method = "bootstrap")$pi0
+    m0 = ceiling(nullProp*m)
+    m1 = m - m0
 
 
     #check whether weight is provided------------
@@ -204,7 +209,8 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
             message("computing ranks probabilities")
             # compute the ranks probability of the tests given the mean effect
             ranksProb <- prob_rank_givenEffect_emp(pvalue = pvalue, filter = filter,
-                            group = group, h_breaks = h_breaks, effectType = effectType)
+                            group = group, h_breaks = h_breaks, df = df,
+                            effectType = effectType)
             message("finished computing the ranks probabilities")
         }
 
@@ -220,7 +226,8 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
         message("finished computing the weights")
     }
 
-    wgt_all = rep(wgt, each = m/group)
+    grpSize <- ceiling(m/group)
+    wgt_all = rep(wgt, each = grpSize)[1:m]
 
     message("comparing pvalues with thresholds")
     if(method == "BH"){
@@ -234,7 +241,7 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
     # outputs--------------
     n_rejections = dim(rejections_list)[1]
 
-    return(list(totalTests = m, nullProp = nullProp,
+    return(list(totalTests = length(pvalue), nullProp = nullProp,
                 ranksProb = ranksProb, weight = wgt_all,
                 rejections = n_rejections, rejections_list = rejections_list))
 }

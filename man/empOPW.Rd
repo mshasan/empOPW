@@ -6,8 +6,8 @@
 \usage{
 empOPW(pvalue, filter, weight = NULL, ranksProb = NULL,
   mean_testEffect = NULL, alpha = 0.05, tail = 1L, delInterval = 1e-04,
-  group = 5L, h_breaks = 101L, effectType = c("continuous", "binary"),
-  method = c("BH", "BON"), ...)
+  group = 5L, h_breaks = 101L, df = 3, effectType = c("continuous",
+  "binary"), method = c("BH", "BON"), ...)
 }
 \arguments{
 \item{pvalue}{a vector of pvalues of the test statistics}
@@ -32,6 +32,8 @@ Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the wei
 \item{group}{number of groups to be used to split the p-values, default is five}
 
 \item{h_breaks}{number of breaks to be used for the histogram, default is 101}
+
+\item{df}{degrees of freedom for spline smooting. Must be in (1, group].}
 
 \item{effectType}{type of effect sizes; c("continuous", "binary")}
 
@@ -88,6 +90,9 @@ One can compute \code{ranksProb} empirically by using the function
 
 The function internally compute \code{mean_testEffect} from the test statistics,
 which is obtainde from the p-values.
+
+It is better to see different combinations of groups and h_breaks to optimize
+the rejections. The number of p-values per group could be approximately 1000.
 }
 \examples{
 # generate pvalues and filter statistics

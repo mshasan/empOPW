@@ -5,16 +5,18 @@
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
 prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 101,
-  effectType = c("continuous", "binary"))
+  df = 3, effectType = c("continuous", "binary"))
 }
 \arguments{
 \item{pvalue}{vector of test pvalues}
 
 \item{filter}{vector of filter statistics}
 
-\item{group}{number of groups}
+\item{group}{number of groups, should be at least four}
 
 \item{h_breaks}{number of breaks for the histogram}
+
+\item{df}{degrees of freedom for spline smooting. Must be in (1, group].}
 
 \item{effectType}{type of effect size c("binary","continuous")}
 }
