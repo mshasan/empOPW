@@ -6,8 +6,8 @@
 \usage{
 empOPW(pvalue, filter, weight = NULL, ranksProb = NULL,
   mean_testEffect = NULL, alpha = 0.05, tail = 1L, delInterval = 1e-04,
-  group = 5L, h_breaks = 101L, df = 3, effectType = c("continuous",
-  "binary"), method = c("BH", "BON"), ...)
+  max.group = 5L, h_breaks = 71L, effectType = c("continuous", "binary"),
+  method = c("BH", "BON"), ...)
 }
 \arguments{
 \item{pvalue}{a vector of pvalues of the test statistics}
@@ -29,11 +29,10 @@ be the same.}
 \item{delInterval}{interval between the \code{delta} values of a sequence.
 Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the weight}
 
-\item{group}{number of groups to be used to split the p-values, default is five}
+\item{max.group}{maximum number of groups to be used to split the p-values,
+default is five. Note that, it is better to keep approximately 1000 p-values per group.}
 
-\item{h_breaks}{number of breaks to be used for the histogram, default is 101}
-
-\item{df}{degrees of freedom for spline smooting. Must be in (1, group].}
+\item{h_breaks}{number of breaks to be used for the histogram, default is 71}
 
 \item{effectType}{type of effect sizes; c("continuous", "binary")}
 

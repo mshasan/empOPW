@@ -42,12 +42,6 @@
 #===============================================================================
 # function to compute p(rank=k|filterEffect=ey) emperically
 
-# Input:-----
-# group = number of groups
-# pvalue = vector of test pvalues
-# filter = vector of filter statistics
-# effectType = type of effect size c("binary","continuous")
-
 # internal parameters:-----
 # grpSize = number of pvalues per group
 # Data = a data frame of pvalue and filter statistics
@@ -59,11 +53,8 @@
 # hist_dens = compute density from histogram
 # probAll = normalized density for all points but we need only the first
 
-# output:-----
-# probVec_smooth_norm = normalized ranks probability given
-# effect size, p(rank=k|effect=ey)
 #===============================================================================
-prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 101,
+prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 71L,
                                       df = 3, effectType = c("continuous", "binary"))
     {
         Data = tibble(pvalue, filter)
@@ -94,11 +85,14 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 101
 
         # smooting and nomalizing the ranks probability-------------
         probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
+        # if(any(probVec_smooth < 0)){
+        #     neg_val <- probVec_smooth[probVec_smooth < 0]
+        #     probVec_smooth <- probVec_smooth - neg_val + .000001
+        # }
         probVec_smooth_norm <- probVec_smooth/sum(probVec_smooth, na.rm = TRUE)
 
         return(probVec_smooth_norm)
     }
-
 
 
 

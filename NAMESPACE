@@ -1,5 +1,6 @@
-export(prob_rank_givenEffect_emp)
 export(empOPW)
+export(optimal_group_df)
+export(prob_rank_givenEffect_emp)
 importFrom(graphics, hist)
 import(stats)
 import(OPWeight)

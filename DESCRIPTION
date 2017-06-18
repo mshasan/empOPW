@@ -33,7 +33,8 @@ Suggests:
     gridExtra,
     knitr,
     Matrix,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 biocViews:
     MultipleComparison,

@@ -18,9 +18,9 @@
 #' @param tail right-tailed or two-tailed hypothesis test. default is right-tailed test.
 #' @param delInterval interval between the \code{delta} values of a sequence.
 #' Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the weight
-#' @param group number of groups to be used to split the p-values, default is five
-#' @param h_breaks number of breaks to be used for the histogram, default is 101
-#' @param df degrees of freedom for spline smooting. Must be in (1, group].
+#' @param max.group maximum number of groups to be used to split the p-values,
+#' default is five. Note that, it is better to keep approximately 1000 p-values per group.
+#' @param h_breaks number of breaks to be used for the histogram, default is 71
 #' @param effectType type of effect sizes; c("continuous", "binary")
 #' @param method type of methods is used to obtain the results; c("BH", "BON"),
 #' Benjemini-Hochberg or Bonferroni
@@ -112,21 +112,6 @@
 #===============================================================================
 # # function to apply empOPW methods on data
 #---------------------------------------------------
-# Input:
-#----------------------------
-# pvalue = vector of pvalues
-# filter = vector of filter statistics
-# ranksProb = the probabilities of the filters or filters' ranks given
-# the mean of the filter effects
-# mean_filterEffect = filter effect size
-# mean_testEffect = test effect size
-# effectType = type of effect size c("binary","continuous")
-# alpha = significance level of the hypotheis test
-# nrep = number of replications for importance sampling
-# tail = right-tailed or two-tailed hypothesis test. default is two-tailed test
-# delInterval = interval between the delta values of a sequence
-# method = Benjamini_HOchberg (BH) or Bonferroni (BON)
-
 # internal parameters:-----
 # m = number of hypothesis test
 # nullProp = proportion of true null hypothesis
@@ -135,28 +120,18 @@
 # test =  compute test statistics from the pvalues if not given
 # test_effect_vec = estiamted number of the true alternaitve test statistics
 # mean_testEffect = mean test effect sizes of the true alternaive hypotheis
-# mean_filterEffect = mean filter effect sizes of the true alternaive hypotheis
+# df = degrees of freedom for spline smooting. Must be in (1, group].
 # ranksProb = probailities of the ranks given the mean effect size
 # wgt = weights
 # Data = create a data set
 # OD = odered by covariate
 # odered.pvalues = odered pvalues for all tests
 # padj = adjusted pvalues for FDR uses
-
-# Output:
-#-------------------------
-# totalTests = total number of hypothesis tests
-# nullProp = estimated propotion of the true null hypothesis
-# ranksProb = probability of the ranks given the mean filter effect,
-#                                           p(rank | ey = mean_filterEffet)
-# weight = normalized weight
-# rejections = total number of rejections
-# rejections_list = list of rejected pvalues and corresponding filter statistics
 #-------------------------------------------------------------------------------
 
 empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEffect = NULL,
-                alpha = .05, tail = 1L, delInterval = .0001, group = 5L, h_breaks = 101L,
-                df = 3, effectType = c("continuous", "binary"), method = c("BH", "BON"), ... )
+                alpha = .05, tail = 1L, delInterval = .0001, max.group = 5L, h_breaks = 71L,
+                effectType = c("continuous", "binary"), method = c("BH", "BON"), ... )
 {
     # formulate a data set-------------
     Data = tibble(pvalue, filter)
@@ -170,7 +145,6 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
     nullProp = qvalue(p = OD_pvalue, pi0.method = "bootstrap")$pi0
     m0 = ceiling(nullProp*m)
     m1 = m - m0
-
 
     #check whether weight is provided------------
     if(!is.null(weight)){
@@ -201,32 +175,37 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
             }
         }
 
-        #check whether filter ranks probability is provided------------
-        if(!is.null(ranksProb)){
-            ranksProb <- ranksProb
-        } else {
+        # find the optimal number of groups and degrees of freedom----------
+        grp_seq <- seq(5, max.group, 5)
+        op_grp_df <- sapply(grp_seq, optimal_group_df, pvalue = OD$pvalue,
+                        filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
+                        alpha = alpha, mean_testEffect = mean_testEffect,
+                        effectType = effectType, method = method)
 
-            message("computing ranks probabilities")
-            # compute the ranks probability of the tests given the mean effect
-            ranksProb <- prob_rank_givenEffect_emp(pvalue = pvalue, filter = filter,
-                            group = group, h_breaks = h_breaks, df = df,
-                            effectType = effectType)
-            message("finished computing the ranks probabilities")
-        }
+        grp <- op_grp_df[1, which.max(op_grp_df[3,])]
+        df <- op_grp_df[2, which.max(op_grp_df[3,])]
 
-        # compute the weights (always right-tailed)------------
+
+        message("computing ranks probabilities")
+        # compute the ranks probability of the tests given the mean effect
+        ranksProb <- prob_rank_givenEffect_emp(pvalue = pvalue, filter = filter,
+                                    group = grp, h_breaks = h_breaks, df = df,
+                                    effectType = effectType)
+        message("finished computing the ranks probabilities")
+
+
         message("computing weights")
         if(effectType == "continuous"){
-            wgt = weight_continuous(alpha = alpha, et = mean_testEffect, m = group,
-                                    ranksProb = ranksProb)
+            wgt = weight_continuous(alpha = alpha, et = mean_testEffect,
+                                    m = grp, ranksProb = ranksProb)
         } else {
-            wgt = weight_binary(alpha = alpha, et = mean_testEffect, m = group,
-                                m1 = m1/m*group, ranksProb = ranksProb)
+            wgt = weight_binary(alpha = alpha, et = mean_testEffect, m = grp,
+                                m1 = m1/m*grp, ranksProb = ranksProb)
         }
         message("finished computing the weights")
     }
 
-    grpSize <- ceiling(m/group)
+    grpSize <- ceiling(m/grp)
     wgt_all = rep(wgt, each = grpSize)[1:m]
 
     message("comparing pvalues with thresholds")

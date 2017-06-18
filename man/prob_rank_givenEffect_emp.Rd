@@ -4,7 +4,7 @@
 \alias{prob_rank_givenEffect_emp}
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
-prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 101,
+prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 71L,
   df = 3, effectType = c("continuous", "binary"))
 }
 \arguments{
