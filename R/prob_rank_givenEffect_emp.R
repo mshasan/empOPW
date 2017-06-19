@@ -85,10 +85,10 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 71L
 
         # smooting and nomalizing the ranks probability-------------
         probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
-        # if(any(probVec_smooth < 0)){
-        #     neg_val <- probVec_smooth[probVec_smooth < 0]
-        #     probVec_smooth <- probVec_smooth - neg_val + .000001
-        # }
+        if(any(probVec_smooth < 0)){
+            neg_val <- probVec_smooth[probVec_smooth < 0]
+            probVec_smooth <- probVec_smooth - neg_val
+        }
         probVec_smooth_norm <- probVec_smooth/sum(probVec_smooth, na.rm = TRUE)
 
         return(probVec_smooth_norm)

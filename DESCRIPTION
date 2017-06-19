@@ -12,27 +12,23 @@ Description: This package perform weighted-pvalue based multiple hypothesis test
     external covariates and the corresponding test effect size.
 Depends: 
     R (>= 3.4.0),
-    OPWeight
+    OPWeight,
+    OPWpaper
 License: Artistic-2.0
 LazyData: true
 Imports:
-    BiocGenerics,
     graphics,
-    MASS,
+    IHW,
     limma,
     qvalue,
     stats, 
     tibble
 Suggests:
-    airway,
     BiocStyle,
     cowplot,
     DESeq2,
-    devtools,
     ggplot2,
-    gridExtra,
     knitr,
-    Matrix,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
