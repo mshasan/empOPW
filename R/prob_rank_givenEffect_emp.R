@@ -34,7 +34,7 @@
 #' # apply the function to compute the rank proabbility
 #' grp = 10
 #' ranksProb = prob_rank_givenEffect_emp(pvalue = p, filter = X, group = grp,
-#'                                h_breaks = 101, effectType = "continuous")
+#'                                h_breaks = 71, effectType = "continuous")
 #'
 #' # plot the probability
 #' plot(1:grp, ranksProb, type="l", xlab = "ranks", ylab = "P(rank | effect)")
@@ -54,7 +54,7 @@
 # probAll = normalized density for all points but we need only the first
 
 #===============================================================================
-prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 71L,
+prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100L,
                                       df = 3, effectType = c("continuous", "binary"))
     {
         Data = tibble(pvalue, filter)
@@ -70,12 +70,15 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 71L
                 pval_perGrp <- OD_pvalue[(grp*grpSize - grpSize + 1):(grp*grpSize)]
 
                 if(effectType == "continuous"){
-                    hist_dens <- hist(pval_perGrp, freq = FALSE,
-                              breaks = seq(0, 1, length = h_breaks))$density
-                    probAll = hist_dens/sum(hist_dens)
+
+                    bin <- c(0, (1:h_breaks)/h_breaks)
+                    bin.counts <- tabulate(cut(pval_perGrp, bin))
+                    probAll = bin.counts/sum(bin.counts)
                     prob = probAll[1]
+
                 } else {
-                    prob <- 1 - propTrueNull(p = pval_perGrp, method = "lfdr")
+
+                    prob <- 1 - propTrueNull(p = pval_perGrp, method = "hist")
                 }
 
                 return(prob)
@@ -93,6 +96,18 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 71L
 
         return(probVec_smooth_norm)
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

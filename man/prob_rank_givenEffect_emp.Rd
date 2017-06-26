@@ -4,7 +4,7 @@
 \alias{prob_rank_givenEffect_emp}
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
-prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 71L,
+prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 100L,
   df = 3, effectType = c("continuous", "binary"))
 }
 \arguments{
@@ -44,7 +44,7 @@ p = 1 - pnorm(Z)
 # apply the function to compute the rank proabbility
 grp = 10
 ranksProb = prob_rank_givenEffect_emp(pvalue = p, filter = X, group = grp,
-                               h_breaks = 101, effectType = "continuous")
+                               h_breaks = 71, effectType = "continuous")
 
 # plot the probability
 plot(1:grp, ranksProb, type="l", xlab = "ranks", ylab = "P(rank | effect)")
