@@ -5,7 +5,8 @@
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
 prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 100L,
-  df = 3, effectType = c("continuous", "binary"))
+  bin_idx = 1L, df = 3L, smooth = TRUE, effectType = c("continuous",
+  "binary"))
 }
 \arguments{
 \item{pvalue}{vector of test pvalues}
@@ -16,7 +17,14 @@ prob_rank_givenEffect_emp(pvalue, filter, group = 5L, h_breaks = 100L,
 
 \item{h_breaks}{number of breaks for the histogram}
 
+\item{bin_idx}{Integer, bin number of the histogram. Almost alwyas it is one,
+becasue we are interested to obtain the ranks probability of the alternative
+tests}
+
 \item{df}{degrees of freedom for spline smooting. Must be in (1, group].}
+
+\item{smooth}{Character of ("TRUE" or "FALSE") to apply spline smoothing,
+default is TRUE}
 
 \item{effectType}{type of effect size c("binary","continuous")}
 }

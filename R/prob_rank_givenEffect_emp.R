@@ -6,7 +6,12 @@
 #' @param filter vector of filter statistics
 #' @param group number of groups, should be at least four
 #' @param h_breaks number of breaks for the histogram
+#' @param bin_idx Integer, bin number of the histogram. Almost alwyas it is one,
+#' becasue we are interested to obtain the ranks probability of the alternative
+#' tests
 #' @param df degrees of freedom for spline smooting. Must be in (1, group].
+#' @param smooth Character of ("TRUE" or "FALSE") to apply spline smoothing,
+#' default is TRUE
 #' @param effectType type of effect size c("binary","continuous")
 #'
 #' @details If one wants to test \deqn{H_0: \epsilion_i=0 vs. H_a: \epsilion_i > 0,}
@@ -55,7 +60,8 @@
 
 #===============================================================================
 prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100L,
-                                      df = 3, effectType = c("continuous", "binary"))
+                                      bin_idx = 1L, df = 3L, smooth = TRUE,
+                                      effectType = c("continuous", "binary"))
     {
         Data = tibble(pvalue, filter)
         data_omit_na <- Data[which(!is.na(Data$pvalue)),]
@@ -71,10 +77,8 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100
 
                 if(effectType == "continuous"){
 
-                    bin <- c(0, (1:h_breaks)/h_breaks)
-                    bin.counts <- tabulate(cut(pval_perGrp, bin))
-                    probAll = bin.counts/sum(bin.counts)
-                    prob = probAll[1]
+                    prob <- relative_freq(bin_idx = bin_idx, h_breaks = h_breaks,
+                                  obs = pval_perGrp)$rf_one
 
                 } else {
 
@@ -87,11 +91,18 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100
         probVec <- sapply(1:group, fun_prob)
 
         # smooting and nomalizing the ranks probability-------------
-        probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
-        if(any(probVec_smooth < 0)){
-            neg_val <- probVec_smooth[probVec_smooth < 0]
-            probVec_smooth <- probVec_smooth - neg_val
+        if(smooth == TRUE){
+
+            probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
+            if(any(probVec_smooth < 0)){
+                neg_val <- probVec_smooth[probVec_smooth < 0]
+                probVec_smooth <- probVec_smooth - neg_val
+            }
+
+        } else {
+            probVec_smooth <- probVec
         }
+
         probVec_smooth_norm <- probVec_smooth/sum(probVec_smooth, na.rm = TRUE)
 
         return(probVec_smooth_norm)
