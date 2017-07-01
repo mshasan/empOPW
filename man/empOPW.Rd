@@ -6,8 +6,8 @@
 \usage{
 empOPW(pvalue, filter, weight = NULL, ranksProb = NULL,
   mean_testEffect = NULL, alpha = 0.05, tail = 1L, delInterval = 1e-04,
-  max.group = 5L, h_breaks = 71L, effectType = c("continuous", "binary"),
-  method = c("BH", "BON"), ...)
+  group = NULL, max.group = 5L, h_breaks = 71L,
+  effectType = c("continuous", "binary"), method = c("BH", "BON"), ...)
 }
 \arguments{
 \item{pvalue}{a vector of pvalues of the test statistics}
@@ -28,6 +28,9 @@ be the same.}
 
 \item{delInterval}{interval between the \code{delta} values of a sequence.
 Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the weight}
+
+\item{group}{Integer, number of groups. Default is NULL. If one wants to use
+a fixed number of group then should use max.group = NULL}
 
 \item{max.group}{maximum number of groups to be used to split the p-values,
 default is five. Note that, it is better to keep approximately 1000 p-values per group.}
@@ -88,10 +91,15 @@ One can compute \code{ranksProb} empirically by using the function
 \code{\link{prob_rank_givenEffect_emp}}.\cr
 
 The function internally compute \code{mean_testEffect} from the test statistics,
-which is obtainde from the p-values.
+which is obtainde from the p-values.\cr
 
 It is better to see different combinations of groups and h_breaks to optimize
-the rejections. The number of p-values per group could be approximately 1000.
+the rejections. The number of p-values per group could be approximately 1000.\cr
+
+One must need to provide either the number of groups or the maximum number of
+groups. If both or only the max.group is given then the max.group will be used
+to obatian the optimal group;otherwise, the number of groups will be determined
+by the group.
 }
 \examples{
 # generate pvalues and filter statistics

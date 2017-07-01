@@ -18,6 +18,8 @@
 #' @param tail right-tailed or two-tailed hypothesis test. default is right-tailed test.
 #' @param delInterval interval between the \code{delta} values of a sequence.
 #' Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the weight
+#' @param group Integer, number of groups. Default is NULL. If one wants to use
+#' a fixed number of group then should use max.group = NULL
 #' @param max.group maximum number of groups to be used to split the p-values,
 #' default is five. Note that, it is better to keep approximately 1000 p-values per group.
 #' @param h_breaks number of breaks to be used for the histogram, default is 71
@@ -49,10 +51,15 @@
 #' \code{\link{prob_rank_givenEffect_emp}}.\cr
 #'
 #' The function internally compute \code{mean_testEffect} from the test statistics,
-#' which is obtainde from the p-values.
+#' which is obtainde from the p-values.\cr
 #'
 #' It is better to see different combinations of groups and h_breaks to optimize
-#' the rejections. The number of p-values per group could be approximately 1000.
+#' the rejections. The number of p-values per group could be approximately 1000.\cr
+#'
+#' One must need to provide either the number of groups or the maximum number of
+#' groups. If both or only the max.group is given then the max.group will be used
+#' to obatian the optimal group;otherwise, the number of groups will be determined
+#' by the group.
 #'
 #' @author Mohamad S. Hasan
 #'
@@ -128,9 +135,11 @@
 # padj = adjusted pvalues for FDR uses
 #-------------------------------------------------------------------------------
 
-empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEffect = NULL,
-                alpha = .05, tail = 1L, delInterval = .0001, max.group = 5L, h_breaks = 71L,
-                effectType = c("continuous", "binary"), method = c("BH", "BON"), ... )
+empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
+                   mean_testEffect = NULL, alpha = .05, tail = 1L,
+                   delInterval = .0001, group = NULL, max.group = 5L,
+                   h_breaks = 71L, effectType = c("continuous", "binary"),
+                   method = c("BH", "BON"), ... )
 {
     # formulate a data set-------------
     Data = tibble(pvalue, filter)
@@ -174,21 +183,35 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
             }
         }
 
-        # find the optimal number of groups ----------
-        if(max.group <= 10){
-            grp_seq <- seq(5, max.group, 1)
-        } else if(max.group <= 30) {
-            grp_seq <- seq(5, max.group, 2)
+
+        # finding group-----------
+        if(is.null(group) & is.null(max.group)){
+
+            stop("either group or max.group must be provided")
+
+        } else if(!is.null(group) & is.null(max.group)){
+
+            grp <- group
+
         } else {
-            grp_seq <- round(seq(5, max.group, 5))
+
+            # find optimal number of groups ----------
+            if(max.group <= 10){
+                grp_seq <- seq(5, max.group, 1)
+            } else if(max.group <= 30) {
+                grp_seq <- seq(5, max.group, 2)
+            } else {
+                grp_seq <- round(seq(5, max.group, 5))
+            }
+
+            op_grp <- sapply(grp_seq, optimal_group, pvalue = OD$pvalue,
+                             filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
+                             alpha = alpha, mean_testEffect = mean_testEffect,
+                             effectType = effectType, method = method)
+
+            grp <- op_grp[[1, which.max(op_grp[2,])]]
         }
 
-        op_grp <- sapply(grp_seq, optimal_group, pvalue = OD$pvalue,
-                        filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
-                        alpha = alpha, mean_testEffect = mean_testEffect,
-                        effectType = effectType, method = method)
-
-        grp <- op_grp[[1, which.max(op_grp[2,])]]
 
         message("computing ranks probabilities")
         # compute the ranks probability of the tests given the mean effect
@@ -224,7 +247,7 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
     n_rejections = dim(rejections_list)[1]
 
     return(list(totalTests = length(pvalue), nullProp = nullProp, opGroup = grp,
-                ranksProb = ranksProb, weight = wgt_all,
+                ranksProb = ranksProb, group_wgt = wgt, weight = wgt_all,
                 rejections = n_rejections, rejections_list = rejections_list))
 }
 
