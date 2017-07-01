@@ -73,9 +73,11 @@
 #'
 #' @return \code{totalTests} total number of hypothesis tests evaluated
 #' @return \code{nullProp} estimated propotion of the true null hypothesis
+#' @return \code{opGroup} Integer, optimal number of groups
 #' @return \code{ranksProb} probability of the ranks given the mean filter effect,
 #' p(rank | ey = mean_filterEffect)
-#' @return \code{weight} normalized weight
+#' @return \code{group_wgt} Numeric vector of group weights (normalized)
+#' @return \code{weight} Numeric vector of normalized weight for all tests
 #' @return \code{rejections} total number of rejections
 #' @return \code{rejections_list} list of rejected pvalues and the corresponding
 #' filter statistics
@@ -127,6 +129,7 @@
 # test =  compute test statistics from the pvalues if not given
 # test_effect_vec = estiamted number of the true alternaitve test statistics
 # mean_testEffect = mean test effect sizes of the true alternaive hypotheis
+# grp =  number of groups
 # ranksProb = probailities of the ranks given the mean effect size
 # wgt = weights
 # Data = create a data set

@@ -49,10 +49,14 @@ Benjemini-Hochberg or Bonferroni}
 
 \code{nullProp} estimated propotion of the true null hypothesis
 
+\code{opGroup} Integer, optimal number of groups
+
 \code{ranksProb} probability of the ranks given the mean filter effect,
 p(rank | ey = mean_filterEffect)
 
-\code{weight} normalized weight
+\code{group_wgt} Numeric vector of group weights (normalized)
+
+\code{weight} Numeric vector of normalized weight for all tests
 
 \code{rejections} total number of rejections
 
