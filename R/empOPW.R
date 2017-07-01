@@ -77,7 +77,7 @@
 #' @examples
 #' # generate pvalues and filter statistics
 #' m = 10000
-#' set.seed(3)
+#' set.seed(123)
 #' filters = runif(m, min = 0, max = 2.5)          # filter statistics
 #' H = rbinom(m, size = 1, prob = 0.1)             # hypothesis true or false
 #' tests = rnorm(m, mean = H * filters)            # Z-score
@@ -120,7 +120,6 @@
 # test =  compute test statistics from the pvalues if not given
 # test_effect_vec = estiamted number of the true alternaitve test statistics
 # mean_testEffect = mean test effect sizes of the true alternaive hypotheis
-# df = degrees of freedom for spline smooting. Must be in (1, group].
 # ranksProb = probailities of the ranks given the mean effect size
 # wgt = weights
 # Data = create a data set
@@ -175,22 +174,26 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
             }
         }
 
-        # find the optimal number of groups and degrees of freedom----------
-        grp_seq <- seq(5, max.group, 5)
-        op_grp_df <- sapply(grp_seq, optimal_group_df, pvalue = OD$pvalue,
+        # find the optimal number of groups ----------
+        if(max.group <= 10){
+            grp_seq <- seq(5, max.group, 1)
+        } else if(max.group <= 30) {
+            grp_seq <- seq(5, max.group, 2)
+        } else {
+            grp_seq <- round(seq(5, max.group, 5))
+        }
+
+        op_grp <- sapply(grp_seq, optimal_group, pvalue = OD$pvalue,
                         filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
                         alpha = alpha, mean_testEffect = mean_testEffect,
                         effectType = effectType, method = method)
 
-        grp <- op_grp_df[1, which.max(op_grp_df[3,])]
-        df <- op_grp_df[2, which.max(op_grp_df[3,])]
-
+        grp <- op_grp[[1, which.max(op_grp[2,])]]
 
         message("computing ranks probabilities")
         # compute the ranks probability of the tests given the mean effect
         ranksProb <- prob_rank_givenEffect_emp(pvalue = pvalue, filter = filter,
-                                    group = grp, h_breaks = h_breaks, df = df,
-                                    effectType = effectType)
+                    group = grp, h_breaks = h_breaks, effectType = effectType)
         message("finished computing the ranks probabilities")
 
 
@@ -221,7 +224,7 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
     n_rejections = dim(rejections_list)[1]
 
     return(list(totalTests = length(pvalue), nullProp = nullProp, opGroup = grp,
-                opDf = df, ranksProb = ranksProb, weight = wgt_all,
+                ranksProb = ranksProb, weight = wgt_all,
                 rejections = n_rejections, rejections_list = rejections_list))
 }
 

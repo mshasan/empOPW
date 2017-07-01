@@ -9,7 +9,6 @@
 #' @param bin_idx Integer, bin number of the histogram. Almost alwyas it is one,
 #' becasue we are interested to obtain the ranks probability of the alternative
 #' tests
-#' @param df degrees of freedom for spline smooting. Must be in (1, group].
 #' @param smooth Character of ("TRUE" or "FALSE") to apply spline smoothing,
 #' default is TRUE
 #' @param effectType type of effect size c("binary","continuous")
@@ -31,6 +30,7 @@
 #' @examples
 #'
 #' # generating data (known in practice)
+#' set.seed(123)
 #' X = runif(100000, min = 0, max = 2.5)         # covariate
 #' H = rbinom(length(X), size = 1, prob = 0.1)   # hypothesis true or false
 #' Z = rnorm(length(X), mean = H * X)            # Z-score
@@ -60,7 +60,7 @@
 
 #===============================================================================
 prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100L,
-                                      bin_idx = 1L, df = 3L, smooth = TRUE,
+                                      bin_idx = 1L, smooth = TRUE,
                                       effectType = c("continuous", "binary"))
     {
         Data = tibble(pvalue, filter)
@@ -93,7 +93,7 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100
         # smooting and nomalizing the ranks probability-------------
         if(smooth == TRUE){
 
-            probVec_smooth <- smooth.spline(x = 1:group, y = probVec, df = df)$y
+            probVec_smooth <- smooth.spline(x = 1:group, y = probVec, cv = TRUE)$y
             if(any(probVec_smooth < 0)){
                 neg_val <- probVec_smooth[probVec_smooth < 0]
                 probVec_smooth <- probVec_smooth - neg_val

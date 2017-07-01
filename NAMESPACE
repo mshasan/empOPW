@@ -1,6 +1,6 @@
 export(empOPW)
 export(fwerPowerFdrPower_emp)
-export(optimal_group_df)
+export(optimal_group)
 export(prob_rank_givenEffect_emp)
 export(relative_freq)
 export(simu_fwer_emp)

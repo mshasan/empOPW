@@ -96,7 +96,7 @@ the rejections. The number of p-values per group could be approximately 1000.
 \examples{
 # generate pvalues and filter statistics
 m = 10000
-set.seed(3)
+set.seed(123)
 filters = runif(m, min = 0, max = 2.5)          # filter statistics
 H = rbinom(m, size = 1, prob = 0.1)             # hypothesis true or false
 tests = rnorm(m, mean = H * filters)            # Z-score
