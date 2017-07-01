@@ -220,8 +220,8 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL, mean_testEff
     # outputs--------------
     n_rejections = dim(rejections_list)[1]
 
-    return(list(totalTests = length(pvalue), nullProp = nullProp,
-                ranksProb = ranksProb, weight = wgt_all,
+    return(list(totalTests = length(pvalue), nullProp = nullProp, opGroup = grp,
+                opDf = df, ranksProb = ranksProb, weight = wgt_all,
                 rejections = n_rejections, rejections_list = rejections_list))
 }
 
