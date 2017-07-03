@@ -17,17 +17,18 @@ Depends:
 License: Artistic-2.0
 LazyData: true
 Imports:
+    cowplot,
+    ggplot2,
     graphics,
     IHW,
     limma,
     qvalue,
+    reshape2,
     stats, 
     tibble
 Suggests:
     BiocStyle,
-    cowplot,
     DESeq2,
-    ggplot2,
     knitr,
     rmarkdown,
     testthat
