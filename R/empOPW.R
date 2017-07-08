@@ -67,6 +67,7 @@
 #' @export
 #'
 #' @import tibble tibble
+#' @import limma propTrueNull
 #'
 #' @seealso \code{\link{prob_rank_givenEffect_emp}} \code{\link{weight_binary}}
 #' \code{\link{weight_continuous}}
@@ -142,7 +143,7 @@
 
 empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
                    mean_testEffect = NULL, alpha = .05, tail = 1L,
-                   delInterval = .0001, group = NULL, max.group = 5L,
+                   delInterval = .001, group = NULL, max.group = 5L,
                    h_breaks = 71L, effectType = c("continuous", "binary"),
                    method = c("BH", "BON"), ... )
 {
@@ -154,8 +155,9 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
 
 
     # compute the number of tests------------
+    message("estimate the number of true null hypothesis")
     m = length(OD_pvalue)
-    nullProp = qvalue(p = OD_pvalue, pi0.method = "bootstrap")$pi0
+    nullProp = propTrueNull(p = OD_pvalue, method = "hist")
     m0 = ceiling(nullProp*m)
     m1 = m - m0
 
@@ -211,9 +213,9 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
             }
 
             op_grp <- sapply(grp_seq, optimal_group, pvalue = OD$pvalue,
-                             filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
-                             alpha = alpha, mean_testEffect = mean_testEffect,
-                             effectType = effectType, method = method)
+                        filter = OD$filter, h_breaks = h_breaks, m = m, m1 = m1,
+                        alpha = alpha, mean_testEffect = mean_testEffect,
+                        effectType = effectType, method = method)
 
             grp <- op_grp[[1, which.max(op_grp[2,])]]
         }

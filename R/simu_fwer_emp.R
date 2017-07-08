@@ -27,21 +27,18 @@
 #' @references Hasan and Schliekelman (2017)
 #'
 #' @examples
-#' alphaVec = seq(.01, .1, .02)
-#' simVal = 1:3  # in actual case use at least simVal = 1000
-#' typeIerror_mat = sapply(simVal, simu_fwer_emp, m = 100, alphaVec = alphaVec)
+#' simVal = 1  # in actual case use at least simVal = 1000
+#' typeIerror_mat = sapply(simVal, simu_fwer_emp, m = 10000, alphaVec = .05)
 #'
 #===============================================================================
-#
 # internal parameters:-----
 # pval = pvalues from null tests
 # pval_filter = filter pvalues from null tests
 # test = test statistics
 # filter = filter test statistics
-#
 #===============================================================================
 
-simu_fwer_emp <- function(s, m, alphaVec, max.group = 10L)
+simu_fwer_emp <- function(s, m, alphaVec, max.group = 5L)
     {
     fwer_per_rep <- function(alpha)
         {
@@ -58,7 +55,8 @@ simu_fwer_emp <- function(s, m, alphaVec, max.group = 10L)
                               alpha = alpha, max.group = max.group,
                            effectType = "continuous", method = "BON")$rejections
 
-            dbn_wgt <- bayes_weights(mu = filter, sigma = rep(1, m), q = alpha/m)$w
+            dbn_wgt <- bayes_weights(mu = filter, sigma = rep(1, m),
+                                                            q = alpha/m)$w
 
             ihw_fwer <- ihw(pval, filter, alpha = alpha,
                                             adjustment_type = "bonferroni")

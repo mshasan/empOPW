@@ -4,7 +4,7 @@
 \alias{simu_fwer_emp}
 \title{Simulate Family Wise Error Rate (FWER) empirically}
 \usage{
-simu_fwer_emp(s, m, alphaVec, max.group = 10L)
+simu_fwer_emp(s, m, alphaVec, max.group = 5L)
 }
 \arguments{
 \item{s}{number of replication in a simulation}
@@ -26,9 +26,8 @@ This function generate pvalues times form \code{uniform(0, 1)} then applying
 OPWeight method to obtain the Familly Wise Error Rate (FWER)
 }
 \examples{
-alphaVec = seq(.01, .1, .02)
-simVal = 1:3  # in actual case use at least simVal = 1000
-typeIerror_mat = sapply(simVal, simu_fwer_emp, m = 100, alphaVec = alphaVec)
+simVal = 1  # in actual case use at least simVal = 1000
+typeIerror_mat = sapply(simVal, simu_fwer_emp, m = 10000, alphaVec = .05)
 
 }
 \references{

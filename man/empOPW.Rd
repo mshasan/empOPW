@@ -5,7 +5,7 @@
 \title{Perform Empirical Optimal P-value Weighting}
 \usage{
 empOPW(pvalue, filter, weight = NULL, ranksProb = NULL,
-  mean_testEffect = NULL, alpha = 0.05, tail = 1L, delInterval = 1e-04,
+  mean_testEffect = NULL, alpha = 0.05, tail = 1L, delInterval = 0.001,
   group = NULL, max.group = 5L, h_breaks = 71L,
   effectType = c("continuous", "binary"), method = c("BH", "BON"), ...)
 }

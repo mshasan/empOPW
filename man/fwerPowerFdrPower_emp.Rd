@@ -5,7 +5,7 @@
 \title{Simulate FWER, POWER, FDR, and POWER}
 \usage{
 fwerPowerFdrPower_emp(i, simu, m, null, corr = 0, cv = 0, alpha = 0.05,
-  groupSize = 100L, max.group = 10L, filterEffectVec,
+  groupSize = 100L, max.group = 5L, filterEffectVec,
   effectType = c("continuous", "binary"))
 }
 \arguments{
@@ -49,7 +49,7 @@ Power for the different effect sizes
 \examples{
 # vector of effect sizes
 effectVec <- c(1, 1.5, 2)
-simuVal = 3
+simuVal = 2
 FwerPowerFdrPower <- sapply(1:length(effectVec), fwerPowerFdrPower_emp,
              simu = simuVal, m = 10000, null = .5, corr = 0,
              cv = 0, alpha = .05, groupSize = 100, max.group = 10,
