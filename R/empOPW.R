@@ -242,6 +242,7 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
     message("comparing pvalues with thresholds")
     if(method == "BH"){
         padj <- p.adjust(OD_pvalue/wgt_all, method = "BH")
+        OD <- add_column(OD, padj)
         rejections_list = OD[which((padj <= alpha) == TRUE), ]
     } else {
         rejections_list = OD[which((OD_pvalue <= alpha*wgt_all/m) == TRUE), ]

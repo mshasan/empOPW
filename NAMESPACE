@@ -21,7 +21,7 @@ importFrom(qvalue, qvalue)
 importFrom(pweight, bayes_weights)
 importFrom(reshape2, melt)
 importFrom(tibble, tibble)
-
+importFrom(tibble, add_column)
 
 
 
