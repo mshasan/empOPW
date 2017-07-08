@@ -18,6 +18,7 @@ importFrom(IHW, adj_pvalues)
 importFrom(IHW, rejections)
 importFrom(limma, propTrueNull)
 importFrom(qvalue, qvalue)
+importFrom(pweight, bayes_weights)
 importFrom(reshape2, melt)
 importFrom(tibble, tibble)
 

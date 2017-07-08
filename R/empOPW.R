@@ -21,7 +21,8 @@
 #' @param group Integer, number of groups. Default is NULL. If one wants to use
 #' a fixed number of group then should use max.group = NULL
 #' @param max.group maximum number of groups to be used to split the p-values,
-#' default is five. Note that, it is better to keep approximately 1000 p-values per group.
+#' default is five. Note that, it is better to keep approximately 1000 p-values
+#' per group.
 #' @param h_breaks number of breaks to be used for the histogram, default is 71
 #' @param effectType type of effect sizes; c("continuous", "binary")
 #' @param method type of methods is used to obtain the results; c("BH", "BON"),

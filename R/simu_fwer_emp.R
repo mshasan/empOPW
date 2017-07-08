@@ -14,6 +14,8 @@
 #' @author Mohamad S. Hasan, \email{mshasan@uga.edu}
 #' @export
 #'
+#' @import pweight, bayes_weights
+#'
 #' @seealso \code{\link{qvalue}}
 #' \code{\link{prob_rank_givenEffect}}
 #' \code{\link{weight_binary}}
@@ -56,13 +58,16 @@ simu_fwer_emp <- function(s, m, alphaVec, max.group = 10L)
                               alpha = alpha, max.group = max.group,
                            effectType = "continuous", method = "BON")$rejections
 
+            dbn_wgt <- bayes_weights(mu = filter, sigma = rep(1, m), q = alpha/m)$w
+
             ihw_fwer <- ihw(pval, filter, alpha = alpha,
                                             adjustment_type = "bonferroni")
 
             bon = sum(pval <= alpha/m, na.rm = TRUE)
+            dbn <-sum(pval <= alpha*dbn_wgt/m, na.rm = TRUE)
             IHW <- rejections(ihw_fwer)
 
-            return(c(bon, pro_bin, pro_cont, IHW))
+            return(c(bon, pro_bin, pro_cont, dbn, IHW))
         }
 
         fwer_per_rep_mat = sapply(alphaVec, fwer_per_rep)
