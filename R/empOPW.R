@@ -85,6 +85,7 @@
 #'
 #'
 #' @examples
+#' library(OPWeight)
 #' # generate pvalues and filter statistics
 #' m = 10000
 #' set.seed(123)

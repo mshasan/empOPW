@@ -12,8 +12,6 @@ Description: This package perform weighted-pvalue based multiple hypothesis test
     external covariates and the corresponding test effect size.
 Depends: 
     R (>= 3.3.0),
-    OPWeight,
-    OPWpaper
 License: Artistic-2.0
 LazyData: true
 Imports:
@@ -22,6 +20,8 @@ Imports:
     graphics,
     IHW,
     limma,
+    OPWeight,
+    OPWpaper,
     pweight,
     qvalue,
     reshape2,

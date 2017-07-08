@@ -28,7 +28,7 @@ OPWeight method to obtain the Familly Wise Error Rate (FWER)
 \examples{
 alphaVec = seq(.01, .1, .02)
 simVal = 1:3  # in actual case use at least simVal = 1000
-typeIerror_mat = sapply(simVal, simu_fwer, m = 100, alphaVec = alphaVec)
+typeIerror_mat = sapply(simVal, simu_fwer_emp, m = 100, alphaVec = alphaVec)
 
 }
 \references{

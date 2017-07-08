@@ -33,7 +33,8 @@ Note that, \code{delta} is a LaGrange multiplier, necessary to normalize the wei
 a fixed number of group then should use max.group = NULL}
 
 \item{max.group}{maximum number of groups to be used to split the p-values,
-default is five. Note that, it is better to keep approximately 1000 p-values per group.}
+default is five. Note that, it is better to keep approximately 1000 p-values
+per group.}
 
 \item{h_breaks}{number of breaks to be used for the histogram, default is 71}
 
@@ -106,6 +107,7 @@ to obatian the optimal group;otherwise, the number of groups will be determined
 by the group.
 }
 \examples{
+library(OPWeight)
 # generate pvalues and filter statistics
 m = 10000
 set.seed(123)
