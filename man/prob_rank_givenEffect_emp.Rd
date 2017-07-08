@@ -42,7 +42,7 @@ one should the binary effect size
 
 # generating data (known in practice)
 set.seed(123)
-X = runif(100000, min = 0, max = 2.5)         # covariate
+X = runif(10000, min = 0, max = 2.5)         # covariate
 H = rbinom(length(X), size = 1, prob = 0.1)   # hypothesis true or false
 Z = rnorm(length(X), mean = H * X)            # Z-score
 p = 1 - pnorm(Z)

@@ -41,7 +41,7 @@
 #' simuVal = 2
 #' FwerPowerFdrPower <- sapply(1:length(effectVec), fwerPowerFdrPower_emp,
 #'              simu = simuVal, m = 10000, null = .5, corr = 0,
-#'              cv = 0, alpha = .05, groupSize = 100, max.group = 10,
+#'              cv = 0, alpha = .05, groupSize = 100, max.group = 5,
 #'              filterEffectVec = effectVec, effectType = "continuous")
 #'
 #===============================================================================
