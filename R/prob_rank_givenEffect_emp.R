@@ -95,7 +95,7 @@ prob_rank_givenEffect_emp <- function(pvalue, filter, group = 5L, h_breaks = 100
 
             probVec_smooth <- smooth.spline(x = 1:group, y = probVec, cv = FALSE)$y
             if(any(probVec_smooth < 0)){
-                neg_val <- probVec_smooth[probVec_smooth < 0]
+                neg_val <- min(probVec_smooth[probVec_smooth < 0])
                 probVec_smooth <- probVec_smooth - neg_val
             }
 
