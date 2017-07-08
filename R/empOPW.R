@@ -190,6 +190,7 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
 
 
         # finding group-----------
+        message("finding optimal number of groups")
         if(is.null(group) & is.null(max.group)){
 
             stop("either group or max.group must be provided")
@@ -222,7 +223,6 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
         # compute the ranks probability of the tests given the mean effect
         ranksProb <- prob_rank_givenEffect_emp(pvalue = pvalue, filter = filter,
                     group = grp, h_breaks = h_breaks, effectType = effectType)
-        message("finished computing the ranks probabilities")
 
 
         message("computing weights")
@@ -233,7 +233,6 @@ empOPW <- function(pvalue, filter, weight = NULL, ranksProb = NULL,
             wgt = weight_binary(alpha = alpha, et = mean_testEffect, m = grp,
                                 m1 = m1/m*grp, ranksProb = ranksProb)
         }
-        message("finished computing the weights")
     }
 
     grpSize <- ceiling(m/grp)
