@@ -52,7 +52,7 @@ data_analysis <- function(alpha, pvalue, filter, N_current, N_prior, tail,
     pro_bon <- empOPW(pvalue = pvalue, filter = filter, alpha = alpha,
                       tail = tail, max.group = max.group,
                       effectType = effectType, method = "BON")$rejections
-    bon <- sum(pvalue <= alpha/length(pvalue))
+    bon <- sum(pvalue <= alpha/length(pvalue), na.rm = TRUE)
     dbn_bon <- sum(pvalue <= alpha*dbn_wgt/m, na.rm = TRUE)
     ihw_bon <- rejections(ihw(pvalue, filter, alpha = alpha,
                               adjustment_type = "bonferroni"))
@@ -62,7 +62,7 @@ data_analysis <- function(alpha, pvalue, filter, N_current, N_prior, tail,
     pro_bh <- empOPW(pvalue = pvalue, filter = filter, alpha = alpha,
                      tail = tail, max.group = max.group,
                      effectType = effectType, method = "BH")$rejections
-    bh <- sum(p.adjust(pvalue, method = "BH") <= alpha)
+    bh <- sum(p.adjust(pvalue, method = "BH") <= alpha, na.rm = TRUE)
     dbn_bh <- sum(p.adjust(pvalue/dbn_wgt, method = "BH") <= alpha, na.rm = TRUE)
     ihw_bh <- rejections(ihw(pvalue, filter, alpha = alpha))
 

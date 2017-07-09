@@ -48,7 +48,7 @@ X = runif(m, min = 0, max = 2.5)               # covariate
 H = rbinom(length(X), size = 1, prob = 0.1)   # hypothesis true or false
 Z = rnorm(length(X), mean = H * X)            # Z-score
 p = 1 - pnorm(Z)
-results <- data_analysis(alpha = .1, pvalue = p, filter = X, N_current = m,
+rejections <- data_analysis(alpha = .1, pvalue = p, filter = X, N_current = m,
          N_prior = m, tail = 2, max.group = 10, effectType = "continuous")
 
 }
