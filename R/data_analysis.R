@@ -66,7 +66,18 @@ data_analysis <- function(alpha, pvalue, filter, N_current, N_prior, tail,
     dbn_bh <- sum(p.adjust(pvalue/dbn_wgt, method = "BH") <= alpha, na.rm = TRUE)
     ihw_bh <- rejections(ihw(pvalue, filter, alpha = alpha))
 
+    # results-----
     rejections <- c(pro_bon, bon, dbn_bon, ihw_bon, pro_bh, bh, dbn_bh, ihw_bh)
+
     return(rejections)
 }
+
+
+
+
+
+
+
+
+
 
