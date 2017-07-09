@@ -5,6 +5,7 @@ export(optimal_group)
 export(prob_rank_givenEffect_emp)
 export(relative_freq)
 export(simu_fwer_emp)
+export(data_analysis)
 
 importFrom(graphics, hist)
 import(ggplot2)
