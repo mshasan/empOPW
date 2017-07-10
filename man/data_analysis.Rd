@@ -5,7 +5,7 @@
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
 data_analysis(alpha, pvalue, filter, N_current, N_prior, tail, max.group,
-  effectType = c("continuous", "binary"))
+  standarized = FALSE, effectType = c("continuous", "binary"))
 }
 \arguments{
 \item{alpha}{Nmeric, significance level of the hypothesis test}
@@ -14,9 +14,11 @@ data_analysis(alpha, pvalue, filter, N_current, N_prior, tail, max.group,
 
 \item{filter}{a vector of filter statistics}
 
-\item{N_current}{Integer, number of observations in the current data}
+\item{N_current}{Integer vector, number of observations per test in the
+current data}
 
-\item{N_prior}{Integer, number of observations in the prior data}
+\item{N_prior}{Integer vector, number of observations per test in the
+prior data}
 
 \item{tail}{right-tailed or two-tailed hypothesis test.
 default is right-tailed test.}
@@ -25,7 +27,11 @@ default is right-tailed test.}
 default is five. Note that, it is better to keep approximately 1000 p-values
 per group.}
 
-\item{effectType}{Character of type ("binary","continuous") of effect sizes}
+\item{standarized}{Character of c("TRUE" or "FALSE") determine whether
+standarization is required. Default is FALSE means filter is a vector of
+zscore. Thus, standarization will not used.}
+
+\item{effectType}{Character of type ("binary" or"continuous") of effect sizes}
 }
 \value{
 \code{rejections} A numeric vector of the number of rejected test of
