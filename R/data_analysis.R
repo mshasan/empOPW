@@ -51,8 +51,8 @@
 # to indacate left-tailed test, because all other methods are based on
 # right-tailed test
 #===============================================================================
-data_analysis <- function(alpha, pvalue, filter, N_current, N_prior, tail,
-                          max.group, standarized = FALSE,
+data_analysis <- function(alpha, pvalue, filter, N_current = 1L, N_prior = 1L,
+                          tail, max.group, standarized = FALSE,
                           effectType = c("continuous", "binary"))
 {
     m = length(pvalue)
@@ -61,9 +61,9 @@ data_analysis <- function(alpha, pvalue, filter, N_current, N_prior, tail,
     if(standarized == TRUE){
         mn = mean(filter, na.rm = TRUE)
         sdv = sd(filter, na.rm = TRUE)
-        z_prior = -(filter - mn)/sdv
+        z_prior = (filter - mn)/sdv
     } else {
-        z_prior = -filter
+        z_prior = filter
     }
 
     mu <- sqrt(N_current/N_prior)*z_prior

@@ -4,8 +4,8 @@
 \alias{data_analysis}
 \title{Emperical ranks probbaility of the test given the effect size}
 \usage{
-data_analysis(alpha, pvalue, filter, N_current, N_prior, tail, max.group,
-  standarized = FALSE, effectType = c("continuous", "binary"))
+data_analysis(alpha, pvalue, filter, N_current = 1L, N_prior = 1L, tail,
+  max.group, standarized = FALSE, effectType = c("continuous", "binary"))
 }
 \arguments{
 \item{alpha}{Nmeric, significance level of the hypothesis test}
