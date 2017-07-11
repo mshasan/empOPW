@@ -67,7 +67,7 @@ data_analysis <- function(alpha, pvalue, filter, N_current = 1L, N_prior = 1L,
     }
 
     mu <- sqrt(N_current/N_prior)*z_prior
-    dbn_wgt <- bayes_weights(mu = mu, sigma = sigma, q = alpha/m)$w
+    dbn_wgt <- bayes_weights(mu = -mu, sigma = sigma, q = alpha/m)$w
 
     # FWER cotrols-------
     pro_bon <- empOPW(pvalue = pvalue, filter = filter, alpha = alpha,
